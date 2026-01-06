@@ -1,49 +1,64 @@
-import { todoReducer } from './reducer';
-import { 
-    ADD_ITEM
-} from './constants';
+import { todoReducer } from "./reducer";
+import { ADD_ITEM, REMOVE_ITEM, UPDATE_ITEM } from "./constants";
 
-describe('Todo Reducer Logic', () => {
+describe("Todo Reducer Logic", () => {
+	// 1. Test Create Multiple Todo Items
+	test("should add multiple items", () => {
+		let state = [];
 
-    // 1. Test Create Multiple Todo Items
-    test('should add multiple items', () => {
+		// 1. Add "Buy Milk"
+		state = todoReducer(state, {
+			type: ADD_ITEM,
+			payload: { id: 1, title: "Buy Milk" },
+		});
 
-        let state = [];
+		// 2. Add "Go to the doctor" (We pass the 'state' variable which now contains 'Buy Milk')
+		state = todoReducer(state, {
+			type: ADD_ITEM,
+			payload: { id: 2, title: "Go to the doctor" },
+		});
 
-        // 2. Add "Buy Milk"
-        state = todoReducer(state, { 
-            type: ADD_ITEM, 
-            payload: { id: 1, title: 'Buy Milk' } 
-        });
+		// 3. Add "Go to the gym"
+		state = todoReducer(state, {
+			type: ADD_ITEM,
+			payload: { id: 3, title: "Go to the gym" },
+		});
 
-        // 3. Add "Go to the doctor" (We pass the 'state' variable which now contains 'Buy Milk')
-        state = todoReducer(state, { 
-            type: ADD_ITEM, 
-            payload: { id: 2, title: 'Go to the doctor' } 
-        });
+		// 4. Add "Call the plumber"
+		state = todoReducer(state, {
+			type: ADD_ITEM,
+			payload: { id: 4, title: "Call the plumber" },
+		});
 
-        // 4. Add "Go to the gym"
-        state = todoReducer(state, { 
-            type: ADD_ITEM, 
-            payload: { id: 3, title: 'Go to the gym' } 
-        });
+		// 5. Check we have 4 items
+		expect(state).toHaveLength(4);
 
-        // 5. Add "Call the plumber"
-        state = todoReducer(state, { 
-            type: ADD_ITEM, 
-            payload: { id: 4, title: 'Call the plumber' } 
-        });
+		// 6. Verify the titles are correct
+		expect(state[0].title).toBe("Buy Milk");
+		expect(state[1].title).toBe("Go to the doctor");
+		expect(state[2].title).toBe("Go to the gym");
+		expect(state[3].title).toBe("Call the plumber");
 
-        // Check we have 4 items
-        expect(state).toHaveLength(4);
+		// 7. Verify they all default to not completed
+		expect(state[3].completed).toBe(false);
+	});
 
-        // Verify the titles are correct
-        expect(state[0].title).toBe('Buy Milk');
-        expect(state[1].title).toBe('Go to the doctor');
-        expect(state[2].title).toBe('Go to the gym');
-        expect(state[3].title).toBe('Call the plumber');
+	// 2. Test Delete a Todo
+	test("should remove an item", () => {
+		const initialState = [{ id: 1, title: "Buy Milk", completed: false }];
+		const action = { type: REMOVE_ITEM, payload: { id: 1 } };
+		const newState = todoReducer(initialState, action);
+		expect(newState).toHaveLength(0);
+	});
 
-        // Verify they all default to not completed
-        expect(state[3].completed).toBe(false);
-    });
+	// 3. Test Update/Edit a Todo
+	test("should update an item title", () => {
+		const initialState = [{ id: 1, title: "Buy Milk", completed: false }];
+		const action = {
+			type: UPDATE_ITEM,
+			payload: { id: 1, title: "Buy Cookies" },
+		};
+		const newState = todoReducer(initialState, action);
+		expect(newState[0].title).toBe("Buy Cookies");
+	});
 });
