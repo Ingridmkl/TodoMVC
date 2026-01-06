@@ -1,5 +1,5 @@
 import { todoReducer } from "./reducer";
-import { ADD_ITEM, REMOVE_ITEM, UPDATE_ITEM } from "./constants";
+import { ADD_ITEM, REMOVE_ITEM, UPDATE_ITEM, TOGGLE_ITEM } from "./constants";
 
 describe("Todo Reducer Logic", () => {
 	// 1. Test Create Multiple Todo Items
@@ -61,4 +61,18 @@ describe("Todo Reducer Logic", () => {
 		const newState = todoReducer(initialState, action);
 		expect(newState[0].title).toBe("Buy Cookies");
 	});
+
+	// 4 & 5. Test Complete/Uncomplete a Todo
+		test('should toggle item completion status', () => {
+			const initialState = [{ id: 1, title: 'Buy Milk', completed: false }];
+			const action = { type: TOGGLE_ITEM, payload: { id: 1 } };
+			
+			// Toggle to true
+			let newState = todoReducer(initialState, action);
+			expect(newState[0].completed).toBe(true);
+	
+			// Toggle back to false
+			newState = todoReducer(newState, action);
+			expect(newState[0].completed).toBe(false);
+		});
 });
