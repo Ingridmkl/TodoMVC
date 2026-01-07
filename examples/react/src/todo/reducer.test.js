@@ -5,7 +5,8 @@ import {
     UPDATE_ITEM, 
     TOGGLE_ITEM, 
     REMOVE_COMPLETED_ITEMS, 
-    TOGGLE_ALL
+    TOGGLE_ALL,
+    DUPLICATE_ITEM
 } from "./constants";
 
 describe("Todo Reducer Logic", () => {
@@ -124,5 +125,16 @@ describe("Todo Reducer Logic", () => {
 
         state = todoReducer(state, { type: TOGGLE_ITEM, payload: { id: item1_id } });
         expect(state.filter(t => !t.completed).length).toBe(1);
+    });
+
+    // 9. Test Duplicate a Todo Item
+    test('should duplicate a todo item', () => {
+        const initialState = [{ id: '1', title: 'Buy Milk', completed: false }];
+        const action = { type: DUPLICATE_ITEM, payload: { id: '1' } };
+        const newState = todoReducer(initialState, action);
+
+        expect(newState).toHaveLength(2);
+        expect(newState[1].title).toBe('Buy Milk');
+        expect(newState[1].id).not.toBe('1');
     });
 });
