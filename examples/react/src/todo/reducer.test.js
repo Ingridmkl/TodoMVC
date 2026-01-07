@@ -1,5 +1,6 @@
 import { todoReducer } from "./reducer";
-import { ADD_ITEM, REMOVE_ITEM, UPDATE_ITEM, TOGGLE_ITEM } from "./constants";
+import { ADD_ITEM, REMOVE_ITEM, UPDATE_ITEM, TOGGLE_ITEM, REMOVE_COMPLETED_ITEMS, 
+    TOGGLE_ALL } from "./constants";
 
 describe("Todo Reducer Logic", () => {
 	// 1. Test Create Multiple Todo Items
@@ -75,4 +76,27 @@ describe("Todo Reducer Logic", () => {
 			newState = todoReducer(newState, action);
 			expect(newState[0].completed).toBe(false);
 		});
+	// 6. Test Clear Completed
+    test('should remove all completed items', () => {
+        const initialState = [
+            { id: 1, title: 'Active', completed: false },
+            { id: 2, title: 'Completed', completed: true }
+        ];
+        const action = { type: REMOVE_COMPLETED_ITEMS };
+        const newState = todoReducer(initialState, action);
+        expect(newState).toHaveLength(1);
+        expect(newState[0].id).toBe(1);
+    });
+
+    // 7. Test Complete All
+    test('should toggle all items', () => {
+        const initialState = [
+            { id: 1, title: 'One', completed: false },
+            { id: 2, title: 'Two', completed: true }
+        ];
+        const action = { type: TOGGLE_ALL, payload: { completed: true } };
+        const newState = todoReducer(initialState, action);
+        // Should make all true (since not all were true)
+        expect(newState.every(i => i.completed)).toBe(true);
+    });
 });
