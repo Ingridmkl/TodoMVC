@@ -1,4 +1,4 @@
-import { ADD_ITEM, UPDATE_ITEM, REMOVE_ITEM, TOGGLE_ITEM, REMOVE_ALL_ITEMS, TOGGLE_ALL, REMOVE_COMPLETED_ITEMS } from "./constants";
+import { ADD_ITEM, UPDATE_ITEM, REMOVE_ITEM, TOGGLE_ITEM, REMOVE_ALL_ITEMS, TOGGLE_ALL, REMOVE_COMPLETED_ITEMS, DUPLICATE_ITEM} from "./constants";
 
 /* Borrowed from https://github.com/ai/nanoid/blob/3.0.2/non-secure/index.js
 
@@ -58,6 +58,11 @@ export const todoReducer = (state, action) => {
             return state.map((todo) => (todo.completed !== action.payload.completed ? { ...todo, completed: action.payload.completed } : todo));
         case REMOVE_COMPLETED_ITEMS:
             return state.filter((todo) => !todo.completed);
+        case DUPLICATE_ITEM:
+            const itemToCopy = state.find(t => t.id === action.payload.id);
+            if (!itemToCopy) return state;
+            const copy = { ...itemToCopy, id: nanoid() };
+            return [...state, copy];
     }
 
     throw Error(`Unknown action: ${action.type}`);
