@@ -1,9 +1,16 @@
 import { todoReducer } from "./reducer";
-import { ADD_ITEM, REMOVE_ITEM, UPDATE_ITEM, TOGGLE_ITEM, REMOVE_COMPLETED_ITEMS, 
-    TOGGLE_ALL } from "./constants";
+import { 
+    ADD_ITEM, 
+    REMOVE_ITEM, 
+    UPDATE_ITEM, 
+    TOGGLE_ITEM, 
+    REMOVE_COMPLETED_ITEMS, 
+    TOGGLE_ALL
+} from "./constants";
 
 describe("Todo Reducer Logic", () => {
-	// 1. Test Create Multiple Todo Items
+	
+    // 1. Test Create Multiple Todo Items
 	test("should add multiple items", () => {
 		let state = [];
 
@@ -64,18 +71,19 @@ describe("Todo Reducer Logic", () => {
 	});
 
 	// 4 & 5. Test Complete/Uncomplete a Todo
-		test('should toggle item completion status', () => {
-			const initialState = [{ id: 1, title: 'Buy Milk', completed: false }];
-			const action = { type: TOGGLE_ITEM, payload: { id: 1 } };
-			
-			// Toggle to true
-			let newState = todoReducer(initialState, action);
-			expect(newState[0].completed).toBe(true);
-	
-			// Toggle back to false
-			newState = todoReducer(newState, action);
-			expect(newState[0].completed).toBe(false);
-		});
+    test('should toggle item completion status', () => {
+        const initialState = [{ id: 1, title: 'Buy Milk', completed: false }];
+        const action = { type: TOGGLE_ITEM, payload: { id: 1 } };
+        
+        // Toggle to true
+        let newState = todoReducer(initialState, action);
+        expect(newState[0].completed).toBe(true);
+
+        // Toggle back to false
+        newState = todoReducer(newState, action);
+        expect(newState[0].completed).toBe(false);
+    });
+
 	// 6. Test Clear Completed
     test('should remove all completed items', () => {
         const initialState = [
@@ -98,5 +106,23 @@ describe("Todo Reducer Logic", () => {
         const newState = todoReducer(initialState, action);
         // Should make all true (since not all were true)
         expect(newState.every(i => i.completed)).toBe(true);
+    });
+    
+    // 8. Test Update items left number
+    test('should correctly calculate active items for "items left" count', () => {
+        let state = [];
+
+        expect(state.filter(t => !t.completed).length).toBe(0);
+
+        // Add 2 items
+        state = todoReducer(state, { type: ADD_ITEM, payload: { title: 'Item 1' } });
+        state = todoReducer(state, { type: ADD_ITEM, payload: { title: 'Item 2' } });
+        
+        expect(state.filter(t => !t.completed).length).toBe(2);
+
+        const item1_id = state[0].id; 
+
+        state = todoReducer(state, { type: TOGGLE_ITEM, payload: { id: item1_id } });
+        expect(state.filter(t => !t.completed).length).toBe(1);
     });
 });
