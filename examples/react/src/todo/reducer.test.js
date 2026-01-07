@@ -6,7 +6,8 @@ import {
     TOGGLE_ITEM, 
     REMOVE_COMPLETED_ITEMS, 
     TOGGLE_ALL,
-    DUPLICATE_ITEM
+    DUPLICATE_ITEM,
+    TOGGLE_PRIORITY
 } from "./constants";
 
 describe("Todo Reducer Logic", () => {
@@ -136,5 +137,20 @@ describe("Todo Reducer Logic", () => {
         expect(newState).toHaveLength(2);
         expect(newState[1].title).toBe('Buy Milk');
         expect(newState[1].id).not.toBe('1');
+    });
+
+    // 10. Test Toggle Priority Status
+    test('should toggle priority status of a todo', () => {
+        // Setup: Item starts with no priority
+        const initialState = [{ id: '1', title: 'Urgent Task', completed: false, important: false }];
+        const action = { type: TOGGLE_PRIORITY, payload: { id: '1' } };
+        
+        // 1. Toggle ON
+        let state = todoReducer(initialState, action);
+        expect(state[0].important).toBe(true);
+        
+        // 2. Toggle OFF
+        state = todoReducer(state, action);
+        expect(state[0].important).toBe(false);
     });
 });
