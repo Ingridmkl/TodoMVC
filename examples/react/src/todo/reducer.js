@@ -1,4 +1,4 @@
-import { ADD_ITEM, UPDATE_ITEM, REMOVE_ITEM, TOGGLE_ITEM, REMOVE_ALL_ITEMS, TOGGLE_ALL, REMOVE_COMPLETED_ITEMS, DUPLICATE_ITEM} from "./constants";
+import { ADD_ITEM, UPDATE_ITEM, REMOVE_ITEM, TOGGLE_ITEM, REMOVE_ALL_ITEMS, TOGGLE_ALL, REMOVE_COMPLETED_ITEMS, DUPLICATE_ITEM, TOGGLE_PRIORITY} from "./constants";
 
 /* Borrowed from https://github.com/ai/nanoid/blob/3.0.2/non-secure/index.js
 
@@ -45,7 +45,7 @@ function nanoid(size = 21) {
 export const todoReducer = (state, action) => {
     switch (action.type) {
         case ADD_ITEM:
-            return state.concat({ id: nanoid(), title: action.payload.title, completed: false });
+            return state.concat({ id: nanoid(), title: action.payload.title, completed: false, important: false });
         case UPDATE_ITEM:
             return state.map((todo) => (todo.id === action.payload.id ? { ...todo, title: action.payload.title } : todo));
         case REMOVE_ITEM:
@@ -61,6 +61,8 @@ export const todoReducer = (state, action) => {
         case DUPLICATE_ITEM:
             const itemToCopy = state.find((todo) => todo.id === action.payload.id);
             return itemToCopy ? [...state, { ...itemToCopy, id: nanoid() }] : state;
+        case TOGGLE_PRIORITY:
+            return state.map((todo) => todo.id === action.payload.id ? { ...todo, important: !todo.important } : todo);
     }
 
     throw Error(`Unknown action: ${action.type}`);
