@@ -59,10 +59,8 @@ export const todoReducer = (state, action) => {
         case REMOVE_COMPLETED_ITEMS:
             return state.filter((todo) => !todo.completed);
         case DUPLICATE_ITEM:
-            const itemToCopy = state.find(t => t.id === action.payload.id);
-            if (!itemToCopy) return state;
-            const copy = { ...itemToCopy, id: nanoid() };
-            return [...state, copy];
+            const itemToCopy = state.find((todo) => todo.id === action.payload.id);
+            return itemToCopy ? [...state, { ...itemToCopy, id: nanoid() }] : state;
     }
 
     throw Error(`Unknown action: ${action.type}`);
