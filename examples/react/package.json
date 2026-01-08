@@ -11,7 +11,8 @@
         "build": "webpack --config webpack.prod.js",
         "dev": "webpack serve --open --config webpack.dev.js",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
-        "test": "jest"
+        "test": "jest",
+        "test:coverage": "react-scripts test --coverage --watchAll=false"
     },
     "devDependencies": {
         "@babel/core": "^7.21.0",
