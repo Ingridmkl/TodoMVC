@@ -1,0 +1,92 @@
+name: TodoMVC Test Automation
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  # ------------------------------------------------------------------
+  # JOB 1: UNIT TESTS (Jest)
+  # ------------------------------------------------------------------
+  unit-tests:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./examples/react
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: examples/react/package-lock.json
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Run Jest Unit Tests
+      run: npm test -- --passWithNoTests --coverage
+    
+    # Optional: Upload Coverage Report as Artifact
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report
+        path: examples/react/coverage/
+
+  # ------------------------------------------------------------------
+  # JOB 2: BDD UI TESTS (Selenium + Pytest)
+  # ------------------------------------------------------------------
+  bdd-ui-tests:
+    needs: unit-tests # Run only if unit tests pass
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./examples/react
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 1. Setup Node to run the App
+    - name: Setup Node.js for App
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: examples/react/package-lock.json
+
+    - name: Install Node Dependencies
+      run: npm install
+
+    # 2. Setup Python for Tests
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' 
+
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-bdd selenium webdriver-manager requests
+
+    # 3. Start the React App in the Background
+    - name: Start React App
+      run: |
+        npm start &
+        npx wait-on http://localhost:3000 --timeout 60000
+
+    # 4. Run Selenium BDD Tests
+    - name: Run BDD Tests
+      env:
+        CI: true # Important: Triggers the headless mode in conftest.py
+      run: pytest tests/bdd/
