@@ -22,3 +22,9 @@ but useful for people who use screen readers */
 .toggle-all-label {
     pointer-events: none;
 }
+
+/* Add this to the bottom of app.css */
+.todo-list li.important label {
+    color: #d9534f; /* Bootstrap red */
+    font-weight: bold;
+}
