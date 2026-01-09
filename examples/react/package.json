@@ -8,6 +8,7 @@
         "npm": ">=8.19.3"
     },
     "scripts": {
+        "start": "webpack serve --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js",
         "dev": "webpack serve --open --config webpack.dev.js",
         "serve": "http-server ./dist -p 7002 -c-1 --cors",
