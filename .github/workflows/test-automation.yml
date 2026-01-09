@@ -83,7 +83,7 @@ jobs:
     - name: Start React App
       run: |
         npm start &
-        npx wait-on http://localhost:3000 --timeout 60000
+        npx wait-on http://localhost:7002 --timeout 60000
 
     # 4. Run Selenium BDD Tests
     - name: Run BDD Tests
