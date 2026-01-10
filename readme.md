@@ -1,3 +1,11 @@
+# ! Test Automation Project Ran by Group 6
+
+ABOU-ELJINANE Taha
+BAZILLIO Titouan
+BENARROSH Cyril
+MOUKALA Ingrid
+
+
 # ![TodoMVC](media/logo.png)
 
 > Helping you select an MV\* framework
